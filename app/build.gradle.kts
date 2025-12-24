@@ -5,6 +5,10 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.10.2/userguide/building_java_projects.html in the Gradle documentation.
  */
 
+plugins {
+    `java-library`
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()

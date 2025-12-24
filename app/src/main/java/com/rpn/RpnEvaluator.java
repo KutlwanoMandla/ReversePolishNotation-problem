@@ -3,29 +3,37 @@
  */
 package com.rpn;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class RpnEvaluator {
     public int evaluate(String expression) {
-        Stack<Integer> stack = new Stack<>();
+        Deque<Integer> stack = new ArrayDeque<>();
         String[] tokens = expression.split("\\s+");
 
-        for (String token: tokens) {
+        for (String token : tokens) {
             switch (token) {
                 case "+":
+                    requireOperands(stack, 2);
                     stack.push(stack.pop() + stack.pop());
                     break;
                 case "-":
-                    int a = stack.pop();
-                    int b = stack.pop();
-                    stack.push(b - a);
+                    requireOperands(stack, 2);
+                    int right = stack.pop();
+                    int left = stack.pop();
+                    stack.push(left - right);
                     break;
                 case "*":
+                    requireOperands(stack, 2);
                     stack.push(stack.pop() * stack.pop());
                     break;
                 case "/":
+                    requireOperands(stack, 2);
                     int x = stack.pop();
                     int y = stack.pop();
+                    if (x == 0) {
+                        throw new IllegalArgumentException("Division by zero");
+                    }
                     stack.push(y / x);
                     break;
                 default:
@@ -33,6 +41,15 @@ public class RpnEvaluator {
                     break;
             }
         }
+        if (stack.size() != 1) {
+            throw new IllegalArgumentException("Invalid RPN expression");
+        }
         return stack.pop();
+    }
+
+    private void requireOperands(Deque<Integer> stack, int count) {
+        if (stack.size() < count) {
+            throw new IllegalArgumentException("Invalid RPN expression");
+        }
     }
 }
